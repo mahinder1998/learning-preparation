@@ -1,0 +1,45 @@
+<header>
+    <nav>
+        <ul class="first-label">
+            {% for link in section.settings.menu.links %}
+                <li>
+                    <a href="{{link.url}}">{{link.title}}</a>
+                    {% if link.links.size > 0 %}
+                        <ul class="second-label">
+                            {% for child_link in link.links %}
+                                <li>
+                                    <a href="{{child_link.url}}">{{child_link.title}}</a>
+                                    {% if child_link.links.size > 0 %}
+                                        <ul>
+                                        {% for grandchild_link in child_link.links %}
+                                            <li>
+                                                <a href="{{grandchild_link.url}}">{{grandchild_link.title}}</a>
+                                            </li>
+                                        {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</header>
+
+
+
+
+{% schema %}
+    {
+        "name": "Header",
+        "settings": [
+            {
+                "type": "link_list",
+                "id": "menu",
+                "label": "menu"
+            }
+        ]
+    }
+{% endschema %}
