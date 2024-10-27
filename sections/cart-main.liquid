@@ -1,0 +1,49 @@
+{% if cart.item_count > 0 %}
+    <form action="{{routes.cart_url}}" method="post">
+        {% for item in cart.items %}
+            <div>
+               <img src="{{item.image |  img_url: '200X'}}" alt="{{item.title |  escape}}">
+               <h2>{{item.product.title}}</h2>
+                <p>{{item.price |  money}}</p>
+                <input type="text" name="updates[]" value="{{item.quantity}}">
+
+                {% if item.line_level_discount_allocations.size > 0 %}
+                    Discount:
+                    {% for discount_allocation in item.line_level_discount_allocations %}
+                        {{discount_allocation.discount_application.title}}-{{discount_allocation.amount |  money}}
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+        {% endfor %}
+        <input type="submit" name="checkout" value="checkout">
+        <input type="submit" value="Update cart">
+
+
+        <hr>
+
+        subtotal: {{cart.items_subtotal_price |  money}}
+
+        <ul>
+        {% if cart.cart_level_discount_applications.size>0 %}
+            Discounts:
+            {% for discount_application in cart.cart_level_discount_applications %}
+                <li>{{discount_application.title}}-{{discount_application.total_allocated_amount | money}}</li> 
+            {% endfor %}
+        {% endif %}
+        </ul>
+
+        Total: {{cart.total_price |  money}}
+
+    </form>
+    
+{% else %}
+    <p>empty cart</p>
+{% endif %}
+
+{% schema %}
+    {
+        "name": "Cart",
+        "settings":[]
+    }
+{% endschema %}
