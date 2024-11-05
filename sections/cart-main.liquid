@@ -1,11 +1,16 @@
 {% if cart.item_count > 0 %}
-    <form action="{{routes.cart_url}}" method="post">
+    <form action="{{routes.cart_url}}" method="post" novalidate>
         {% for item in cart.items %}
-            <div>
+            <div class="main-col" data-key="{{item.key}}">
                <img src="{{item.image |  img_url: '200X'}}" alt="{{item.title |  escape}}">
                <h2>{{item.product.title}}</h2>
-                <p>{{item.price |  money}}</p>
-                <input type="text" name="updates[]" value="{{item.quantity}}">
+                <p class="item-price">{{item.price |  money}}</p>
+
+                <div class="quantity-selector">
+                    <button type="button" class="btn-decrement">-</button>
+                    <input type="text" name="updates[]" value="{{item.quantity}}">
+                    <button type="button" class="btn-increment">+</button>
+                </div>
 
                 {% if item.line_level_discount_allocations.size > 0 %}
                     Discount:
@@ -16,14 +21,12 @@
 
             </div>
         {% endfor %}
+        <br><br><br>
         <input type="submit" name="checkout" value="checkout">
-        <input type="submit" value="Update cart">
-
-
-        <hr>
-
+        {% comment %} <input type="submit" value="Update cart"> {% endcomment %}
+        <br><br><br>
+        <hr><br><br><br>
         subtotal: {{cart.items_subtotal_price |  money}}
-
         <ul>
         {% if cart.cart_level_discount_applications.size>0 %}
             Discounts:
@@ -32,11 +35,8 @@
             {% endfor %}
         {% endif %}
         </ul>
-
         Total: {{cart.total_price |  money}}
-
     </form>
-    
 {% else %}
     <p>empty cart</p>
 {% endif %}
@@ -47,3 +47,6 @@
         "settings":[]
     }
 {% endschema %}
+
+
+{{'cart.js' | asset_url |  script_tag    }}
